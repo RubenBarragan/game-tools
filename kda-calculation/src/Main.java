@@ -13,12 +13,12 @@ import io.github.bucket4j.Bucket4j;
 
 public class Main {
 
-	static String KEY = "RGAPI-c23c9494-b076-4711-9ec0-70a0a6b94508";
+	static String KEY = "";
 	static String MAIN_URL = "https://la1.api.riotgames.com";
 	
 	static Bandwidth limit;
 	static Bucket bucket;
-	static int requests = 25;
+	static int requests = 10;
 	static Duration time = Duration.ofSeconds(1);
 
 	public static void main(String[] args) throws IOException, InterruptedException {
@@ -27,11 +27,7 @@ public class Main {
 		limit = Bandwidth.simple(requests, time);
 		bucket = Bucket4j.builder().addLimit(0, limit).build();
 
-		calculatePerformanceSummoner("Ara Asura");
-		calculatePerformanceSummoner("Ara Asura");
-		calculatePerformanceSummoner("Ara Asura");
-		calculatePerformanceSummoner("Ara Asura");
-		calculatePerformanceSummoner("Ara Asura");
+		calculatePerformanceSummoner("Brasped");
 	}
 
 	public static long getAccountIDbyName(String name) throws IOException {
@@ -68,8 +64,8 @@ public class Main {
 		// Consume one API request (rate limit control system)
 		bucket.consume(1, BlockingStrategy.PARKING);
 		
-		//URLEncoder.encode(name, "UTF-8")
-		String s = MAIN_URL + "/lol/summoner/v3/summoners/by-name/" + name + "?api_key=" + KEY;
+		//name = URLEncoder.encode(name, "UTF-8");
+		String s = MAIN_URL + "/lol/summoner/v3/summoners/by-name/" + name.replaceAll("\\s", "%20") + "?api_key=" + KEY;
 		URL url = new URL(s);
 
 		Scanner scan = new Scanner(url.openStream());
@@ -311,6 +307,8 @@ public class Main {
 		System.out.println("Lanes: " + StringArraytoString(lanes));
 		System.out.println("Lane %: " + "Top: " + top + "\t" + "Jungle: " + jg + "\t" + "Mid: " + mid + "\t" + "Bottom: " + bot);
 		System.out.println("Matches analyzed: " + last20Matches.getInt("totalGames"));
+		
+		System.out.println();
 	}
 	
 	static String StringArraytoString(String[] array) {
